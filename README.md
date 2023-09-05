@@ -16,6 +16,26 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Folder Structure
+```
+Restaurant-Nestjs/
+├── src/
+│   ├── main.ts
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── restuarants/
+│   │   ├── restuarants.controller.ts
+│   │   ├── restuarants.service.ts
+│   │   └── dto/
+│   │       ├── create-restuarant.dto.ts
+│   │       └── update-restuarant.dto.ts
+│   ├── middleware/
+│   │   └── upload.middleware.ts  <-- Place your middleware here
+├── node_modules/
+├── package.json
+└── tsconfig.json
+```
+
 ## Installation
 
 ```bash

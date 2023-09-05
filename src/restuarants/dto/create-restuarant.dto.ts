@@ -10,20 +10,25 @@ import {
 import { Category } from '../schema/restuarant.schema';
 
 export class CreateRestuarantDto {
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   name: string;
 
-  @IsNumber()
+  // @IsNotEmpty()
+  // @IsNumber()
   age: number;
 
-  @IsEmail()
+  // @IsNotEmpty()
+  // @IsEmail()
   email: string;
 
-  @IsOptional()
   images?: object[];
+  // @IsOptional()
+  // @IsString()
+  file?: string;
 
-  @IsEnum(Category)
+  // @IsEnum(Category)
   category: Category;
 }
+
 export class UpdateRestuarantDto extends CreateRestuarantDto {}

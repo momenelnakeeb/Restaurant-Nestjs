@@ -17,6 +17,9 @@ export class Restuarant {
 
   @Prop()
   images?: object[];
+
+  @Prop()
+  file?: string;
   @Prop()
   category: Category;
 }
