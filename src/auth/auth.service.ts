@@ -2,19 +2,21 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserModel } from './user.model';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserModel,
     private readonly jwtService: JwtService,
+    private readonly cloudinaryService: CloudinaryService, // Inject CloudinaryService
   ) {}
 
   async signUp(
     email: string,
     password: string,
     name: string,
-    image?: string,
+    file?: Express.Multer.File, // Accept an optional file for image upload
   ): Promise<{ message: string; user: any }> {
     // Check if the email already exists
     const existingUser = await this.userService.findUserByEmail(email);
@@ -25,12 +27,19 @@ export class AuthService {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the user
+    // Upload the image to Cloudinary if a file is provided
+    let imageUrl: string | undefined;
+    if (file) {
+      const cloudinaryResponse = await this.cloudinaryService.uploadImage(file);
+      imageUrl = cloudinaryResponse.url;
+    }
+
+    // Create the user with the image URL if it exists
     const newUser = await this.userService.createUser(
       email,
       hashedPassword,
       name,
-      image,
+      imageUrl, // Use the uploaded image URL if available
     );
 
     // Remove the password from the user object

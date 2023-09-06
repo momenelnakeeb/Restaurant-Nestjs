@@ -9,6 +9,7 @@ import { UserSchema } from 'src/auth/user.schema';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserModel } from './user.model';
 import { AuthController } from './auth.controller';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AuthController } from './auth.controller';
     }),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   ],
-  providers: [AuthService, JwtStrategy, UserModel],
+  providers: [AuthService, JwtStrategy, UserModel, CloudinaryService],
   controllers: [AuthController],
   exports: [AuthService],
 })

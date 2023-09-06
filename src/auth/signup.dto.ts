@@ -17,5 +17,5 @@ export class SignUpDto {
 
   @IsOptional()
   @IsString()
-  image?: string;
+  file?: Express.Multer.File; // Use Express.Multer.File type for file uploads;
 }
