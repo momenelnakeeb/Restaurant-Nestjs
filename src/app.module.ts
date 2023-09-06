@@ -8,6 +8,7 @@ import { v2 as cloudinary } from 'cloudinary'; // Import the Cloudinary package
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 // import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CloudinaryService } from './cloudinary/cloudinary.service';
       envFilePath: '.env',
       isGlobal: true,
     }),
+    AuthModule,
     MongooseModule.forRoot(process.env.DB_URI),
     RestuarantsModule,
     CloudinaryModule,
