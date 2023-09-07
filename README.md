@@ -24,26 +24,46 @@ Restaurant-Nestjs/
 │   ├── main.ts
 │   ├── app.controller.ts
 │   ├── app.module.ts
-│   ├── restuarants/
-│   │   ├── restuarants.controller.ts
-│   │   ├── restuarants.service.ts
-│   │   ├── dto/
-│   │   │   ├── create-restuarant.dto.ts
-│   │   │   └── update-restuarant.dto.ts
-│   ├── middleware/
-│   │   └── upload.middleware.ts  <-- Place your middleware here
+│
 │   ├── auth/
-│   │   ├── auth.controller.ts
-│   │   ├── auth.service.ts
 │   │   ├── strategies/
+│   │   │   ├── jwt.strategy.ts
 │   │   │   ├── local.strategy.ts
-│   │   └── dto/
-│   │       ├── signup.dto.ts
-│   │       ├── signin.dto.ts
-│   │       ├── user.model.ts  <-- Define your user model here
+│   │   │
+│   │   ├── dto/
+│   │   │   ├── password.dto.ts
+│   │   │   ├── signin.dto.ts
+│   │   │   ├── signup.dto.ts
+│   │   │
+│   │   ├── models/
+│   │   │   ├── user.model.ts
+│   │   │   ├── user.schema.ts
+│   │   │
+│   │   ├── auth.controller.ts
+│   │   ├── auth.module.ts
+│   │   ├── auth.service.ts
+│   │   ├── Email.service.ts
+│
+│   ├── cloudinary/
+│   │   ├── cloudinary-response.ts
+│   │   ├── cloudinary.provider.ts
+│   │   ├── cloudinary.module.ts
+│   │   ├── cloudinary.service.ts
+│
+│   ├── restaurants/
+│   │   ├── restaurants.controller.ts
+│   │   ├── restaurants.service.ts
+│   │   ├── dto/
+│   │   │   ├── create-restaurant.dto.ts
+│   │   │   └── update-restaurant.dto.ts
+│   │
+│   ├── middleware/
+│   │   └── upload.middleware.ts
+│
 ├── node_modules/
 ├── package.json
 └── tsconfig.json
+
 ```
 
 ## Installation

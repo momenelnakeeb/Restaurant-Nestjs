@@ -7,6 +7,10 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  // ConflictException,
+  // NotFoundException,
+  Patch,
+  Req,
   // BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -16,12 +20,18 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResetPasswordDto } from './password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+// import { User } from './user.schema';
+import { UserModel } from './user.model';
+// import * as bcrypt from 'bcrypt';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly cloudinaryService: CloudinaryService, // Inject CloudinaryService
+    private readonly userService: UserModel,
   ) {}
 
   @Post('signup')
@@ -71,6 +81,32 @@ export class AuthController {
     } catch (error) {
       // Handle errors and return appropriate responses
       throw error;
+    }
+  }
+  @Patch('update')
+  @UseGuards(AuthGuard('jwt')) // Use JWT guard for authentication
+  @UseInterceptors(FileInterceptor('file')) // Use the FileInterceptor to handle file uploads
+  async updateUser(
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file: Express.Multer.File, // Accept the uploaded file as an argument
+    @Req() req: any,
+  ) {
+    try {
+      const userId = req.user._id; // Get the user ID from the attached user object in the request
+
+      // Update the user information
+      const updatedUser = await this.authService.updateUser(
+        userId,
+        updateUserDto,
+        file,
+      );
+
+      return {
+        message: 'User information updated successfully',
+        user: updatedUser,
+      };
+    } catch (error) {
+      throw error; // Handle errors appropriately (e.g., return a meaningful error response)
     }
   }
 }

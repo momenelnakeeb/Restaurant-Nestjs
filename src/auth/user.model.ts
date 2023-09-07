@@ -21,10 +21,19 @@ export class UserModel {
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
+    console.log('Searching for email:', email);
+    const user = await this.userModel.findOne({ email }).exec();
+    console.log('Found user:', user);
+
+    return user;
+  }
+
+  async findUserByName(name: string): Promise<User | null> {
+    return this.userModel.findOne({ name }).exec();
+  }
+  async findUserById(id: string): Promise<User | null> {
     try {
-      console.log('Searching for email:', email);
-      const user = await this.userModel.findOne({ email }).exec();
-      console.log('Found user:', user);
+      const user = await this.userModel.findById(id).exec();
       if (!user) {
         throw new NotFoundException('User not found');
       }
@@ -32,10 +41,6 @@ export class UserModel {
     } catch (error) {
       throw error;
     }
-  }
-
-  async findUserByName(name: string): Promise<User | null> {
-    return this.userModel.findOne({ name }).exec();
   }
 
   async updateUser(user: User): Promise<User> {
