@@ -3,11 +3,17 @@
 
 import { Schema, Document } from 'mongoose';
 
+export interface PasswordResetOTP {
+  otp: string;
+  expiresAt: Date;
+}
+
 export interface User extends Document {
   email: string;
   password: string;
   name: string;
   file?: string;
+  passwordResetOTP?: PasswordResetOTP; // Declare the passwordResetOTP property
 }
 
 export const UserSchema = new Schema<User>({
@@ -15,4 +21,8 @@ export const UserSchema = new Schema<User>({
   password: String,
   name: String,
   file: String,
+  passwordResetOTP: {
+    otp: String,
+    expiresAt: Date,
+  },
 });

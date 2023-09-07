@@ -7,6 +7,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  // BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from 'src/auth/signup.dto';
@@ -14,6 +15,7 @@ import { SignInDto } from './signin.dto';
 import { LocalStrategy } from './strategies/local.strategy';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ResetPasswordDto } from './password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -46,5 +48,29 @@ export class AuthController {
       signInDto.password,
     );
     return { token };
+  }
+
+  @Post('request-password-reset')
+  async requestPasswordReset(@Body() body: { email: string }) {
+    await this.authService.requestPasswordReset(body.email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    // if (
+    //   !resetPasswordDto.email ||
+    //   !resetPasswordDto.otp ||
+    //   !resetPasswordDto.newPassword
+    // ) {
+    //   throw new BadRequestException('Invalid request body');
+    // }
+
+    try {
+      await this.authService.resetPassword(resetPasswordDto);
+      return { message: 'Password reset successful' };
+    } catch (error) {
+      // Handle errors and return appropriate responses
+      throw error;
+    }
   }
 }
