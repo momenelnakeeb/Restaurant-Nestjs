@@ -12,7 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from './Email.service';
 import { ResetPasswordDto } from './password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './user.schema';
+import { User, UserClass } from './user.schema';
 // import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
@@ -64,9 +64,9 @@ export class AuthService {
 
       // Remove the password from the user object
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password: _, ...userWithoutPassword } = newUser.toObject();
+      // const { password: _, ...userWithoutPassword } = newUser.toObject();
 
-      return userWithoutPassword;
+      return { message: 'message', user: newUser };
     } catch (error) {
       throw error; // Rethrow any exceptions
     }
@@ -253,7 +253,7 @@ export class AuthService {
     userId: string,
     updateUserDto: UpdateUserDto,
     file?: Express.Multer.File,
-  ): Promise<User> {
+  ): Promise<UserClass> {
     try {
       // Find the user by ID
       const user = await this.userService.findUserById(userId);
@@ -310,13 +310,9 @@ export class AuthService {
       }
 
       // Save the updated user
-      const updatedUser = await user.save();
+      const updatedUser = await this.userService.updateUser(user);
 
-      // Remove the password from the user object
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      // const { password: _, ...userWithoutPassword } = updatedUser.toObject();
-
-      return updatedUser;
+      return updatedUser; // Return the updated UserClass
     } catch (error) {
       throw error; // Handle errors appropriately (e.g., log, return a meaningful error)
     }

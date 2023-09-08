@@ -34,6 +34,7 @@ Restaurant-Nestjs/
 │   │   │   ├── password.dto.ts
 │   │   │   ├── signin.dto.ts
 │   │   │   ├── signup.dto.ts
+│   │   │   ├── update-user.dto.ts
 │   │   │
 │   │   ├── models/
 │   │   │   ├── user.model.ts

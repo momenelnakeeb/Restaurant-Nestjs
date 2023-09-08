@@ -11,6 +11,7 @@ import {
   // NotFoundException,
   Patch,
   Req,
+  ClassSerializerInterceptor,
   // BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -25,6 +26,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserModel } from './user.model';
 // import * as bcrypt from 'bcrypt';
 import { AuthGuard } from '@nestjs/passport';
+import { plainToClass } from 'class-transformer';
+import { UserClass } from './user.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -84,29 +87,37 @@ export class AuthController {
     }
   }
   @Patch('update')
-  @UseGuards(AuthGuard('jwt')) // Use JWT guard for authentication
-  @UseInterceptors(FileInterceptor('file')) // Use the FileInterceptor to handle file uploads
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(ClassSerializerInterceptor) // Apply the interceptor here
   async updateUser(
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file: Express.Multer.File, // Accept the uploaded file as an argument
+    @UploadedFile() file: Express.Multer.File,
     @Req() req: any,
   ) {
     try {
-      const userId = req.user._id; // Get the user ID from the attached user object in the request
+      const userId = req.user._id;
 
-      // Update the user information
       const updatedUser = await this.authService.updateUser(
         userId,
         updateUserDto,
         file,
       );
 
+      // Transform the updatedUser object to a simpler structure
+      const simplifiedUser = {
+        _id: updatedUser._id.toString(), // Convert _id to string explicitly
+        email: updatedUser.email,
+        name: updatedUser.name,
+        file: updatedUser.file,
+      };
+
       return {
         message: 'User information updated successfully',
-        user: updatedUser,
+        user: simplifiedUser,
       };
     } catch (error) {
-      throw error; // Handle errors appropriately (e.g., return a meaningful error response)
+      throw error;
     }
   }
 }
