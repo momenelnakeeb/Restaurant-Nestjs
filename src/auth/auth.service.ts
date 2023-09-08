@@ -13,6 +13,7 @@ import { EmailService } from './Email.service';
 import { ResetPasswordDto } from './password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.schema';
+// import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -182,10 +183,76 @@ export class AuthService {
     // Generate a 6-digit OTP
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
+  // async updateUser(
+  //   userId: string,
+  //   updateUserDto: UpdateUserDto,
+  //   file?: Express.Multer.File,
+  // ): Promise<User> {
+  //   try {
+  //     // Find the user by ID
+  //     const user = await this.userService.findUserById(userId);
+
+  //     if (!user) {
+  //       throw new NotFoundException('User not found');
+  //     }
+
+  //     // Clone the original user object
+  //     const originalUser = { ...user.toObject() };
+
+  //     if (updateUserDto.email !== null && updateUserDto.email !== user.email) {
+  //       const existingEmailUser = await this.userService.findUserByEmail(
+  //         updateUserDto.email,
+  //       );
+  //       if (existingEmailUser && updateUserDto.name !== user.name) {
+  //         throw new ConflictException('Email already exists');
+  //       }
+
+  //       // Update the user's email
+  //       user.email = updateUserDto.email;
+  //     }
+
+  //     if (updateUserDto.name !== null && updateUserDto.name !== user.name) {
+  //       const existingNameUser = await this.userService.findUserByName(
+  //         updateUserDto.name,
+  //       );
+  //       if (existingNameUser) {
+  //         throw new ConflictException('Name already exists');
+  //       }
+
+  //       // Update the user's name
+  //       user.name = updateUserDto.name;
+  //     }
+
+  //     // If a file is provided, update the user's file (e.g., profile picture)
+  //     if (file) {
+  //       // Upload the new image to Cloudinary
+  //       const cloudinaryResponse =
+  //         await this.cloudinaryService.uploadImage(file);
+  //       user.file = cloudinaryResponse.url; // Update the user's file URL
+  //     }
+
+  //     // If a new password is provided, update it
+  //     if (updateUserDto.newPassword) {
+  //       const hashedPassword = await bcrypt.hash(updateUserDto.newPassword, 10);
+  //       user.password = hashedPassword;
+  //     }
+
+  //     // Save the updated user
+  //     const updatedUser = await user.save();
+
+  //     // Return the original user with the modified fields
+  //     return {
+  //       ...originalUser,
+  //       ...updatedUser.toObject(),
+  //     };
+  //   } catch (error) {
+  //     throw error; // Handle errors appropriately (e.g., log, return a meaningful error)
+  //   }
+  // }
   async updateUser(
     userId: string,
     updateUserDto: UpdateUserDto,
-    file?: Express.Multer.File, // Accept an optional file for image upload
+    file?: Express.Multer.File,
   ): Promise<User> {
     try {
       // Find the user by ID
@@ -195,37 +262,46 @@ export class AuthService {
         throw new NotFoundException('User not found');
       }
 
-      // Check if the updated email or name already exists in the database
-      if (updateUserDto.email && updateUserDto.email !== user.email) {
+      // // Clone the original user object
+      // const originalUser = { ...user.toObject() };
+
+      if (
+        updateUserDto.email !== undefined &&
+        updateUserDto.email !== user.email
+      ) {
         const existingEmailUser = await this.userService.findUserByEmail(
           updateUserDto.email,
         );
-        if (existingEmailUser) {
+        if (existingEmailUser && updateUserDto.name !== user.name) {
           throw new ConflictException('Email already exists');
         }
+
+        // Update the user's email
+        user.email = updateUserDto.email;
       }
 
-      if (updateUserDto.name && updateUserDto.name !== user.name) {
+      if (
+        updateUserDto.name !== undefined &&
+        updateUserDto.name !== user.name
+      ) {
         const existingNameUser = await this.userService.findUserByName(
           updateUserDto.name,
         );
         if (existingNameUser) {
           throw new ConflictException('Name already exists');
         }
+
+        // Update the user's name
+        user.name = updateUserDto.name;
       }
-      // console.log(updateUserDto.file);
+
       // If a file is provided, update the user's file (e.g., profile picture)
       if (file) {
-        // console.log(updateUserDto.file);
         // Upload the new image to Cloudinary
         const cloudinaryResponse =
           await this.cloudinaryService.uploadImage(file);
         user.file = cloudinaryResponse.url; // Update the user's file URL
       }
-
-      // Update user information
-      user.name = updateUserDto.name;
-      user.email = updateUserDto.email;
 
       // If a new password is provided, update it
       if (updateUserDto.newPassword) {
@@ -235,11 +311,12 @@ export class AuthService {
 
       // Save the updated user
       const updatedUser = await user.save();
-      // Exclude the password field from the response
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...userWithoutPassword } = updatedUser.toObject();
 
-      return userWithoutPassword;
+      // Remove the password from the user object
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // const { password: _, ...userWithoutPassword } = updatedUser.toObject();
+
+      return updatedUser;
     } catch (error) {
       throw error; // Handle errors appropriately (e.g., log, return a meaningful error)
     }
