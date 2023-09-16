@@ -26,6 +26,15 @@ Restaurant-Nestjs/
 │   ├── app.module.ts
 │
 │   ├── auth/
+│   │   ├── decorators/
+│   │   │   ├── current-user.decorator.ts
+│   │   │
+│   │   ├── guards/
+│   │   │   ├── admin.guard.ts
+│   │   │
+│   │   ├── middleware/
+│   │   │   ├── expiration.middleware.ts
+│   │   │
 │   │   ├── strategies/
 │   │   │   ├── jwt.strategy.ts
 │   │   │   ├── local.strategy.ts
@@ -45,21 +54,16 @@ Restaurant-Nestjs/
 │   │   ├── auth.service.ts
 │   │   ├── Email.service.ts
 │
-│   ├── cloudinary/
-│   │   ├── cloudinary-response.ts
-│   │   ├── cloudinary.provider.ts
-│   │   ├── cloudinary.module.ts
-│   │   ├── cloudinary.service.ts
-│
-│   ├── restaurants/
-│   │   ├── restaurants.controller.ts
-│   │   ├── restaurants.service.ts
+│   ├── meal/
 │   │   ├── dto/
-│   │   │   ├── create-restaurant.dto.ts
-│   │   │   └── update-restaurant.dto.ts
-│   │
-│   ├── middleware/
-│   │   └── upload.middleware.ts
+│   │   │   ├── meal.dto.ts
+│   │   │
+│   │   ├── schema/
+│   │   │   ├── meal.schema.ts
+│   │   │
+│   │   ├── meal.controller.ts
+│   │   ├── meal.module.ts
+│   │   ├── meal.service.ts
 │
 ├── node_modules/
 ├── package.json
