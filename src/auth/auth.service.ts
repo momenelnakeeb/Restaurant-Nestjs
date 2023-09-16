@@ -12,7 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from './Email.service';
 import { ResetPasswordDto } from './password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, UserClass } from './user.schema';
+import { UserClass } from './user.schema';
 // import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
@@ -29,6 +29,7 @@ export class AuthService {
     password: string,
     name: string,
     file?: Express.Multer.File, // Accept an optional file for image upload
+    role?: string,
   ): Promise<{ message: string; user: any }> {
     try {
       // Check if the email already exists
@@ -60,6 +61,7 @@ export class AuthService {
         hashedPassword,
         name,
         imageUrl, // Use the uploaded image URL if available
+        role,
       );
 
       // Remove the password from the user object
@@ -79,7 +81,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, _id: user.id, role: user.role };
     return this.jwtService.sign(payload);
   }
 
@@ -183,72 +185,7 @@ export class AuthService {
     // Generate a 6-digit OTP
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
-  // async updateUser(
-  //   userId: string,
-  //   updateUserDto: UpdateUserDto,
-  //   file?: Express.Multer.File,
-  // ): Promise<User> {
-  //   try {
-  //     // Find the user by ID
-  //     const user = await this.userService.findUserById(userId);
 
-  //     if (!user) {
-  //       throw new NotFoundException('User not found');
-  //     }
-
-  //     // Clone the original user object
-  //     const originalUser = { ...user.toObject() };
-
-  //     if (updateUserDto.email !== null && updateUserDto.email !== user.email) {
-  //       const existingEmailUser = await this.userService.findUserByEmail(
-  //         updateUserDto.email,
-  //       );
-  //       if (existingEmailUser && updateUserDto.name !== user.name) {
-  //         throw new ConflictException('Email already exists');
-  //       }
-
-  //       // Update the user's email
-  //       user.email = updateUserDto.email;
-  //     }
-
-  //     if (updateUserDto.name !== null && updateUserDto.name !== user.name) {
-  //       const existingNameUser = await this.userService.findUserByName(
-  //         updateUserDto.name,
-  //       );
-  //       if (existingNameUser) {
-  //         throw new ConflictException('Name already exists');
-  //       }
-
-  //       // Update the user's name
-  //       user.name = updateUserDto.name;
-  //     }
-
-  //     // If a file is provided, update the user's file (e.g., profile picture)
-  //     if (file) {
-  //       // Upload the new image to Cloudinary
-  //       const cloudinaryResponse =
-  //         await this.cloudinaryService.uploadImage(file);
-  //       user.file = cloudinaryResponse.url; // Update the user's file URL
-  //     }
-
-  //     // If a new password is provided, update it
-  //     if (updateUserDto.newPassword) {
-  //       const hashedPassword = await bcrypt.hash(updateUserDto.newPassword, 10);
-  //       user.password = hashedPassword;
-  //     }
-
-  //     // Save the updated user
-  //     const updatedUser = await user.save();
-
-  //     // Return the original user with the modified fields
-  //     return {
-  //       ...originalUser,
-  //       ...updatedUser.toObject(),
-  //     };
-  //   } catch (error) {
-  //     throw error; // Handle errors appropriately (e.g., log, return a meaningful error)
-  //   }
-  // }
   async updateUser(
     userId: string,
     updateUserDto: UpdateUserDto,

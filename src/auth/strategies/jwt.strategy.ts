@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       return null;
     }
-    req.user = user; // Attach the user object to the request
-    return user;
+    req.user = user;
+    return { _id: user._id, email: user.email, role: user.role }; // Include the 'role' property in the user object
   }
 }

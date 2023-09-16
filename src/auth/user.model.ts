@@ -15,8 +15,9 @@ export class UserModel {
     password: string,
     name: string,
     file?: string,
+    role?: string,
   ): Promise<User> {
-    const user = new this.userModel({ email, password, name, file });
+    const user = new this.userModel({ email, password, name, file, role });
     return user.save();
   }
 

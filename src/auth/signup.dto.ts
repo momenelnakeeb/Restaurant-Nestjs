@@ -18,4 +18,7 @@ export class SignUpDto {
   @IsOptional()
   @IsString()
   file?: Express.Multer.File; // Use Express.Multer.File type for file uploads;
+
+  @IsOptional()
+  role?: 'admin' | 'user'; // Include the 'role' field
 }

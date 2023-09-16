@@ -1,6 +1,6 @@
 // auth.module.ts
 
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -11,13 +11,14 @@ import { UserModel } from './user.model';
 import { AuthController } from './auth.controller';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { EmailService } from './Email.service';
+import { TokenExpirationMiddleware } from './middleware/expiration.middleware';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: 'your-secret-key',
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '1d' },
     }),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
   ],
@@ -28,7 +29,13 @@ import { EmailService } from './Email.service';
     CloudinaryService,
     EmailService,
   ],
+
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, MongooseModule, UserModel],
 })
-export class AuthModule {}
+export class AuthModule {
+  // AppModule constructor and configuration
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TokenExpirationMiddleware).forRoutes('*');
+  }
+}

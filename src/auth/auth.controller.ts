@@ -12,6 +12,8 @@ import {
   Patch,
   Req,
   ClassSerializerInterceptor,
+  Inject,
+  Res,
   // BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -26,12 +28,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserModel } from './user.model';
 // import * as bcrypt from 'bcrypt';
 import { AuthGuard } from '@nestjs/passport';
-import { plainToClass } from 'class-transformer';
-import { UserClass } from './user.schema';
+// import { plainToClass } from 'class-transformer';
+// import { UserClass } from './user.schema';
 
 @Controller('auth')
 export class AuthController {
   constructor(
+    @Inject(AuthService) // Inject JwtService using the token name
     private readonly authService: AuthService,
     private readonly cloudinaryService: CloudinaryService, // Inject CloudinaryService
     private readonly userService: UserModel,
@@ -118,6 +121,24 @@ export class AuthController {
       };
     } catch (error) {
       throw error;
+    }
+  }
+  @Post('signout')
+  @UseGuards(AuthGuard())
+  async signout(@Req() req, @Res() res) {
+    try {
+      const cookieName = 'token'; // Replace with your cookie name
+      res.clearCookie(cookieName);
+
+      // Respond with a success message
+      return res.json({
+        message: 'Signout successful. Remove the JWT token on the client side.',
+      });
+    } catch (error) {
+      // Handle any errors that might occur during the logout process
+      return res
+        .status(500)
+        .json({ message: 'An error occurred during signout.' });
     }
   }
 }

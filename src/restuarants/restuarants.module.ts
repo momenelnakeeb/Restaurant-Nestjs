@@ -14,5 +14,6 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
   ],
   providers: [RestuarantsService],
   controllers: [RestuarantsController],
+  exports: [MongooseModule],
 })
 export class RestuarantsModule {}

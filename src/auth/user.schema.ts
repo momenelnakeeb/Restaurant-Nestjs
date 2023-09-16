@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+// /* eslint-disable prettier/prettier */
 // user.schema.ts
 
 // import { Exclude } from 'class-transformer';
@@ -39,6 +39,7 @@ export interface User extends Document {
   name: string;
   file?: string;
   passwordResetOTP?: PasswordResetOTP; // Declare the passwordResetOTP property
+  role: 'admin' | 'user'; // Include the 'role' field
 }
 
 export const UserSchema = new Schema<User>(
@@ -51,7 +52,10 @@ export const UserSchema = new Schema<User>(
       otp: String,
       expiresAt: Date,
     },
+    role: { type: String, enum: ['admin', 'user'], default: 'admin' }, // Add role field
   },
+  // ...
+
   {
     toJSON: {
       transform: function (doc, ret) {
